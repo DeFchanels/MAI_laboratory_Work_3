@@ -1,28 +1,36 @@
 import json
+
 import pytest
-from src.media_catalog.media_item import MediaItem
+
+from src.media_catalog.errors import BrokenDataError, UnsupportedFormatVersionError
 from src.media_catalog.media_catalog import MediaCatalog
-from src.media_catalog.errors import UnsupportedFormatVersionError, BrokenDataError
-from src.media_catalog.storage import save, get_load, load, load_with_edit, FORMAT_VERSION
+from src.media_catalog.media_item import MediaItem
+from src.media_catalog.storage import (
+    FORMAT_VERSION,
+    get_load,
+    load,
+    load_with_edit,
+    save,
+)
 
 
 def test_save_and_load(tmp_path):
-    data = dict(
-        id="1",
-        name="Матрица",
-        category="фильм",
-        year=1999,
-        resolution="1920x1080",
-        duration=9000,
-    )
-    data2 = dict(
-        id="2",
-        name="Дюна",
-        category="фильм",
-        year=2000,
-        resolution="1920x1080",
-        duration=10000,
-    )
+    data = {
+        "id": "1",
+        "name": "Матрица",
+        "category": "фильм",
+        "year": 1999,
+        "resolution": "1920x1080",
+        "duration": 9000,
+    }
+    data2 = {
+        "id": "2",
+        "name": "Дюна",
+        "category": "фильм",
+        "year": 2000,
+        "resolution": "1920x1080",
+        "duration": 10000,
+    }
     cat = MediaCatalog()
     cat.add(MediaItem.from_dict(data))
     cat.add(MediaItem.from_dict(data2))
@@ -38,14 +46,14 @@ def test_save_and_load(tmp_path):
 
 
 def test_format_version(tmp_path):
-    data = dict(
-        id="1",
-        name="Матрица",
-        category="фильм",
-        year=1999,
-        resolution="1920x1080",
-        duration=9000,
-    )
+    data = {
+        "id": "1",
+        "name": "Матрица",
+        "category": "фильм",
+        "year": 1999,
+        "resolution": "1920x1080",
+        "duration": 9000,
+    }
     cat = MediaCatalog()
     cat.add(MediaItem.from_dict(data))
     path = tmp_path / "catalog.json"
@@ -96,14 +104,14 @@ def test_unknown_version(tmp_path):
 
 def test_load_broken_json_not_changing_catalog(tmp_path):
     cat = MediaCatalog()
-    data = dict(
-        id="1",
-        name="Матрица",
-        category="фильм",
-        year=1999,
-        resolution="1920x1080",
-        duration=9000,
-    )
+    data = {
+        "id": "1",
+        "name": "Матрица",
+        "category": "фильм",
+        "year": 1999,
+        "resolution": "1920x1080",
+        "duration": 9000,
+    }
     cat.add(MediaItem.from_dict(data))
     before = [i.id for i in cat]
     path = tmp_path / "catalog.json"
@@ -116,22 +124,22 @@ def test_load_broken_json_not_changing_catalog(tmp_path):
 
 def test_load_part_broken_json_not_changing_catalog(tmp_path):
     cat = MediaCatalog()
-    data = dict(
-        id="1",
-        name="Матрица",
-        category="фильм",
-        year=1999,
-        resolution="1920x1080",
-        duration=9000,
-    )
-    data2 = dict(
-        id="2",
-        name="Матрица 2",
-        category="фильм",
-        year=2000,
-        resolution="1920x1080",
-        duration=9001,
-    )
+    data = {
+        "id": "1",
+        "name": "Матрица",
+        "category": "фильм",
+        "year": 1999,
+        "resolution": "1920x1080",
+        "duration": 9000,
+    }
+    data2 = {
+        "id": "2",
+        "name": "Матрица 2",
+        "category": "фильм",
+        "year": 2000,
+        "resolution": "1920x1080",
+        "duration": 9001,
+    }
     doc = {
         "format_version": FORMAT_VERSION,
         "items": [
@@ -151,22 +159,22 @@ def test_load_part_broken_json_not_changing_catalog(tmp_path):
 
 
 def test_load(tmp_path):
-    data = dict(
-        id="1",
-        name="Матрица",
-        category="фильм",
-        year=1999,
-        resolution="1920x1080",
-        duration=9000,
-    )
-    data2 = dict(
-        id="2",
-        name="Матрица 2",
-        category="фильм",
-        year=2000,
-        resolution="1920x1080",
-        duration=9001,
-    )
+    data = {
+        "id": "1",
+        "name": "Матрица",
+        "category": "фильм",
+        "year": 1999,
+        "resolution": "1920x1080",
+        "duration": 9000,
+    }
+    data2 = {
+        "id": "2",
+        "name": "Матрица 2",
+        "category": "фильм",
+        "year": 2000,
+        "resolution": "1920x1080",
+        "duration": 9001,
+    }
     old = MediaCatalog()
     old.add(MediaItem.from_dict(data))
     new = MediaCatalog()
@@ -179,38 +187,38 @@ def test_load(tmp_path):
 
 
 def test_load_with_edit(tmp_path):
-    data = dict(
-        id="1",
-        name="Матрица",
-        category="фильм",
-        year=1999,
-        resolution="1920x1080",
-        duration=9000,
-    )
-    data2 = dict(
-        id="2",
-        name="Матрица 2",
-        category="фильм",
-        year=2000,
-        resolution="1920x1080",
-        duration=9001,
-    )
-    data3 = dict(
-        id="2",
-        name="Матрица 3",
-        category="фильм",
-        year=1999,
-        resolution="1920x1080",
-        duration=9000,
-    )
-    data4 = dict(
-        id="3",
-        name="Матрица 4",
-        category="фильм",
-        year=2000,
-        resolution="1920x1080",
-        duration=9001,
-    )
+    data = {
+        "id": "1",
+        "name": "Матрица",
+        "category": "фильм",
+        "year": 1999,
+        "resolution": "1920x1080",
+        "duration": 9000,
+    }
+    data2 = {
+        "id": "2",
+        "name": "Матрица 2",
+        "category": "фильм",
+        "year": 2000,
+        "resolution": "1920x1080",
+        "duration": 9001,
+    }
+    data3 = {
+        "id": "2",
+        "name": "Матрица 3",
+        "category": "фильм",
+        "year": 1999,
+        "resolution": "1920x1080",
+        "duration": 9000,
+    }
+    data4 = {
+        "id": "3",
+        "name": "Матрица 4",
+        "category": "фильм",
+        "year": 2000,
+        "resolution": "1920x1080",
+        "duration": 9001,
+    }
     cat = MediaCatalog()
     cat.add(MediaItem.from_dict(data))
     cat.add(MediaItem.from_dict(data2))

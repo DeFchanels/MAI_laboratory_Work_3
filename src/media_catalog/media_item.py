@@ -1,7 +1,8 @@
+import re
 from dataclasses import dataclass
 from datetime import date
-import re
-from .errors import InvalidEntityError, BrokenDataError
+
+from .errors import BrokenDataError, InvalidEntityError
 
 
 @dataclass
@@ -32,7 +33,7 @@ class MediaItem: # Класс для события
                 raise InvalidEntityError(f"{name} cannot be empty")
 
         if not isinstance(year, int) or isinstance(year, bool): # Если год является нецелым числом
-            raise InvalidEntityError(f"Year must be an integer")
+            raise InvalidEntityError("Year must be an integer")
 
         if not (0 <= year <= date.today().year): # Если введен невозможный год
             raise InvalidEntityError(f"Invalid year: {year}")

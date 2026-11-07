@@ -1,7 +1,9 @@
 import json
+
+from .errors import BrokenDataError, UnsupportedFormatVersionError
 from .media_catalog import MediaCatalog
 from .media_item import MediaItem
-from .errors import BrokenDataError, UnsupportedFormatVersionError
+
 FORMAT_VERSION = 1
 
 
